@@ -33,7 +33,7 @@ function sleep (time) {
 
   var id = uuidv4();
 
-  console.log(id);
+  console.log("uuid = " + id);
 
   var data = {
     body: {

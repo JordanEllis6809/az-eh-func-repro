@@ -17,7 +17,7 @@ popd
 source ./setup.sh "$subscription"
 
 # sleep to make sure the environment is finished provisioning
-echo "sleeping for 90 while the environment finishes provisioning."
+echo "sleeping for 90s while the environment finishes provisioning."
 echo "whithout this, the function app is unavailable when trying to upload source..."
 sleep 90
 
