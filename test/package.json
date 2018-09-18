@@ -1,0 +1,17 @@
+{
+  "name": "test",
+  "version": "0.1.0",
+  "description": "Test function triggering off of the eventhub.",
+  "author": {
+    "name": "Jordan Ellis",
+    "email": "joelli@microsoft.com"
+  },
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@azure/event-hubs": "^1.0.2",
+    "documentdb": "^1.14.5",
+    "dotenv": "^6.0.0",
+    "uuid": "^3.3.2"
+  }
+}

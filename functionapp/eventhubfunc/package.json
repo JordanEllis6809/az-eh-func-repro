@@ -1,0 +1,14 @@
+{
+    "name": "eventhubfunc",
+    "version": "0.1.0",
+    "description": "Add events sent through eventhub to cosmos.",
+    "author": {
+        "name": "Jordan Ellis",
+        "email": "joelli@microsoft.com"
+    },
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "documentdb": "^1.12.2"
+    }
+}

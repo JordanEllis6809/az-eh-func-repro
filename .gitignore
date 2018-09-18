@@ -67,3 +67,7 @@ typings/
 
 # az config
 *.config
+.env
+
+# build directory
+.build

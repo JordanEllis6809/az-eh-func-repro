@@ -1,5 +1,3 @@
-# NOTE: Run this script from within its directory
-
 subscription=$1
 
 # Make sure the subscription was passed in
@@ -38,23 +36,52 @@ ehtesting=$(echo $output | grep -P -o "(?<=eventhub-testing = )([^\s|^^]+)")
 funcappname=$(echo $output | grep -P -o "(?<=function-app-name = )([^\s|^^]+)")
 funcapprg=$(echo $output | grep -P -o "(?<=function-app-resourcegroup = )([^\s|^^]+)")
 
-# sleep to make sure the environment is finished provisioning
-sleep 20
-
 # create the cosmos db & collection
-az cosmosdb database create \
+dbexists=$(az cosmosdb database exists \
   --resource-group-name $dbresourcegroup \
   --name $dbaname \
-  --db-name $dbname
+  --db-name $dbname)
 
-az cosmosdb collection create \
+if [ "$dbexists" = "false" ]; then
+  echo "creating cosmosdb database..."
+  az cosmosdb database create \
+    --resource-group-name $dbresourcegroup \
+    --name $dbaname \
+    --db-name $dbname
+fi
+
+collectionexists=$(az cosmosdb collection exists \
   --resource-group-name $dbresourcegroup \
   --name $dbaname \
   --db-name $dbname \
-  --collection-name $dbcollection \
-  --throughput 1000
+  --collection-name $dbcollection)
 
-# TODO: save what's needed to .config file
-# db connection string?
-# function app name
-# that it?
+if [ "$collectionexists" = "false" ]; then
+  echo "creating cosmosdb collection..."
+  az cosmosdb collection create \
+    --resource-group-name $dbresourcegroup \
+    --name $dbaname \
+    --db-name $dbname \
+    --collection-name $dbcollection \
+    --throughput 1000
+fi
+
+# save configuration values for repro.sh
+config="./az.config"
+if [ -f $config ]; then
+  rm -r $config
+fi
+echo "$funcapprg" >> $config
+echo "$funcappname" >> $config
+
+# save environment values for test
+env="./test/.env"
+if [ -f $env ]; then
+  rm -r $env
+fi
+echo "EH_CONNECTIONSTRING=$ehtestingconnection" >> $env
+echo "EH_NAME=$ehtesting" >> $env
+echo "DB_ENDPOINT=$dbendpoint" >> $env
+echo "DB_KEY=$dbkey" >> $env
+echo "DB_NAME=$dbname" >> $env
+echo "DB_COLLECTION=$dbcollection" >> $env
