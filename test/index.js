@@ -45,7 +45,7 @@ function sleep (time) {
 
   // Wait to make sure the event makes its way
   // through the function and into cosmos
-  await sleep(10000);
+  await sleep(35000);
 
   // Query for the GUID in cosmos
   var querySpec = {
@@ -60,14 +60,23 @@ function sleep (time) {
 
   var iterator = dbClient.queryDocuments(dbColLink, querySpec);
 
-  if (iterator.length > 0)
-  {
-    console.log("TEST_SUCCESS");
-  }
-  else
-  {
-    console.log("TEST_FAIL");
-  }
+  await iterator.toArray((err, results) => {
+    if (err) {
+      assert.fail(JSON.stringify(err, null, 2));
+    }
+
+    var length = results.length;
+
+    if (length > 0)
+    {
+      console.log("TEST_SUCCESS");
+    }
+    else
+    {
+      console.log("TEST_FAIL");
+    }
+
+    process.exit();
+  });
 })()
-  .catch(err => console.log("error: ", err))
-  .then(() => process.exit());
+  .catch(err => console.log("error: ", err));
